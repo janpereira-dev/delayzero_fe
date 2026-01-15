@@ -17,7 +17,8 @@ def render():
             analysis = fetch_route_analysis(
                 origin=form_data["origin"],
                 destination=form_data["destination"],
-                travel_date=form_data["date"],
+                departure_date=form_data["departure_date"],
+                return_date=form_data["return_date"],
             )
 
         st.session_state["analysis"] = analysis

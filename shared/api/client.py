@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import date
+from pathlib import Path
 
 import requests
 import streamlit as st
@@ -9,17 +10,33 @@ DEFAULT_TIMEOUT = 15
 DEFAULT_MOCK_PATH = "data/mock_response.json"
 
 
+def _has_secrets_file():
+    home_secrets = Path.home() / ".streamlit" / "secrets.toml"
+    project_secrets = Path.cwd() / ".streamlit" / "secrets.toml"
+    return home_secrets.exists() or project_secrets.exists()
+
+
+def _safe_get_secret(key, default=None):
+    if not _has_secrets_file():
+        return default
+    try:
+        return st.secrets.get(key, default)
+    except FileNotFoundError:
+        return default
+
+
 def get_api_base_url():
-    return st.secrets.get("API_BASE_URL", os.getenv("API_BASE_URL", "")).rstrip("/")
+    value = _safe_get_secret("API_BASE_URL", os.getenv("API_BASE_URL", ""))
+    return str(value).rstrip("/")
 
 
 def use_mock():
-    value = st.secrets.get("USE_MOCK", os.getenv("USE_MOCK", "true"))
+    value = _safe_get_secret("USE_MOCK", os.getenv("USE_MOCK", "true"))
     return str(value).lower() in {"1", "true", "yes", "y"}
 
 
 def load_mock_from_file():
-    path = st.secrets.get(
+    path = _safe_get_secret(
         "MOCK_DATA_PATH", os.getenv("MOCK_DATA_PATH", DEFAULT_MOCK_PATH)
     )
     if not path or not os.path.exists(path):
@@ -44,15 +61,20 @@ def call_api(path, params=None):
     return response.json()
 
 
-def fetch_route_analysis(origin, destination, travel_date: date):
-    _ = (origin, destination, travel_date)
+def fetch_route_analysis(
+    origin, destination, departure_date: date, return_date: date | None
+):
+    _ = (origin, destination, departure_date, return_date)
 
     if not use_mock():
         payload = {
             "origin": origin,
             "destination": destination,
-            "date": travel_date.isoformat(),
+            "date": departure_date.isoformat(),
+            "departure_date": departure_date.isoformat(),
         }
+        if return_date:
+            payload["return_date"] = return_date.isoformat()
         data = call_api("routes/analyze", params=payload)
         if data:
             return data

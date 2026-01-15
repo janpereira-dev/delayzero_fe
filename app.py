@@ -28,6 +28,15 @@ def apply_custom_css():
             box-shadow: 0 6px 20px rgba(118, 75, 162, 0.6);
             transform: translateY(-2px);
         }
+
+        h1 a svg,
+        h2 a svg,
+        h3 a svg,
+        h4 a svg,
+        h5 a svg,
+        h6 a svg {
+            display: none;
+        }
         </style>
         """,
         unsafe_allow_html=True,
