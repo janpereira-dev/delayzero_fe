@@ -20,12 +20,14 @@ Esta es una aplicación de demostración que muestra cómo crear una aplicación
 ### 🔧 Instalación
 
 1. Clona este repositorio:
+
 ```bash
 git clone https://github.com/janpereira-dev/delayzero_fe.git
 cd delayzero_fe
 ```
 
-2. Instala las dependencias:
+1. Instala las dependencias:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -42,7 +44,7 @@ La aplicación se abrirá automáticamente en tu navegador predeterminado en `ht
 
 ### 📁 Estructura del proyecto
 
-```
+```text
 delayzero_fe/
 ├── app.py              # Aplicación principal de Streamlit
 ├── requirements.txt    # Dependencias de Python
@@ -53,6 +55,7 @@ delayzero_fe/
 ### 🎨 Personalización
 
 El archivo `app.py` contiene:
+
 - **CSS personalizado**: Definido en la función `apply_custom_css()`
 - **Componentes de Streamlit**: Títulos, métricas, botones, columnas
 - **Interactividad**: Botones con efectos visuales (balloons)
