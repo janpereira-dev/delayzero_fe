@@ -7,7 +7,7 @@ def render_recommendations(items):
         return
 
     for item in items:
-        with st.container(border=True):
+        with st.container():
             st.subheader(item.get("title", "Recomendación"))
             st.write(item.get("summary", ""))
             col1, col2 = st.columns(2)

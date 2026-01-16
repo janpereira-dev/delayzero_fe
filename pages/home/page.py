@@ -1,16 +1,50 @@
 import streamlit as st
 
 from shared.form.form import render_route_form
-from shared.map.map import render_map
-from shared.recommendations.recommendations import render_recommendations
 from shared.api.client import fetch_route_analysis
 
 
+def apply_clean_home_layout():
+    st.markdown(
+        """
+        <style>
+        section[data-testid="stSidebar"] {
+            display: none !important;
+        }
+
+        div[data-testid="collapsedControl"] {
+            display: none !important;
+        }
+
+        [data-testid="stHeaderActionElements"] {
+            display: none !important;
+        }
+
+        [data-testid="stHeader"] {
+            display: none !important;
+        }
+
+        #MainMenu {
+            visibility: hidden;
+        }
+
+        footer {
+            visibility: hidden;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render():
+    apply_clean_home_layout()
+
     st.header("DelayZero")
     st.write("Planifica tu ruta y revisa las recomendaciones.")
 
-    form_data = render_route_form()
+    with st.container(border=True):
+        form_data = render_route_form()
 
     if form_data["submitted"]:
         with st.spinner("Analizando ruta..."):
@@ -22,10 +56,5 @@ def render():
             )
 
         st.session_state["analysis"] = analysis
-        st.success("Resultados listos. Ve a la pestaña Results para ver el detalle.")
-
-    analysis = st.session_state.get("analysis")
-    if analysis:
-        st.subheader("Vista rápida")
-        render_map(analysis.get("route_points", []))
-        render_recommendations(analysis.get("recommendations", []))
+        st.success("Resultados listos. Redirigiendo a resultados...")
+        st.switch_page("pages/resultados.py")
